@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sapphire RV Park Map</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="map-container">
+    <img src="cabin.png" alt="Cabin Map">
+    <!-- Dynamic SVG overlay -->
+    <svg id="overlay-svg"></svg>
+    <!-- Tooltip -->
+    <div class="tooltip" id="tooltip"></div>
+  </div>
+
+  <!-- ===== Modal Structure ===== -->
+  <div class="modal" id="errorModal">
+    <div class="modal-content">
+      <h2>❌ Already Booked</h2>
+      <p>Sorry, this area is not available for booking.</p>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="map.js"></script>
+</body>
+</html>

@@ -1,0 +1,1000 @@
+Skip to content
+Chat history
+
+You said:
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Map Colors</title>
+    <style>
+        .map-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .map-container img {
+            display: block;
+            max-width: 100%;
+        }
+
+        svg {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        polygon {
+            cursor: pointer;
+            pointer-events: all;
+            stroke: #000;
+            stroke-width: 1;
+        }
+
+        /* ===== Modal Styles ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content h2 {
+            margin: 0 0 10px;
+            font-size: 1.3rem;
+            color: #b22222;
+        }
+
+        .modal-content p {
+            margin: 0 0 20px;
+            font-size: 1rem;
+        }
+
+        .close-btn {
+            background: #b22222;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .close-btn:hover {
+            background: #800000;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="map-container">
+        <img src="map_big.png" usemap="#image-map">
+        <!-- Dynamic SVG overlay -->
+        <svg id="overlay-svg"></svg>
+    </div>
+
+    <map name="image-map">
+        <!-- Example booked polygon -->
+        <area  title="booked" href="https://sapphirervpark.filldesignprojects.website/cabins/" shape="poly"
+            coords="510,782,510,759,426,759,426,782,454,782,454,805,481,805,481,782">
+
+
+
+        <area title="available" href="https://sapphirervpark.filldesignprojects.website/cabins/"
+            coords="481,747,452,746,451,725,428,723,428,701,510,700,511,725,482,725" shape="poly">
+
+
+        <area target="" alt="" title="booked" href="" coords="511,668,511,641,417,640,421,665,449,665,450,686,481,687,481,666"
+            shape="poly">
+        <area target="" alt="" title="booked" href="" coords="367,205,387,204,387,217,416,217,416,145,390,145,390,173,361,174"
+            shape="poly">
+        <area target="" alt="" title="booked" href="" coords="437,204,457,203,458,219,491,221,488,141,459,143,459,172,437,174"
+            shape="poly">
+        <area target="" alt="" title="booked" href="" coords="555,368,525,369,525,398,505,400,505,429,527,429,527,443,555,444"
+            shape="poly">
+        <area target="" alt="" title="booked" href="" coords="618,368,591,366,588,400,567,398,567,428,587,430,589,442,618,444"
+            shape="poly">
+        <area target="" alt="" title="booked" href="" coords="679,369,653,368,649,396,627,400,629,430,648,429,651,443,680,443"
+            shape="poly">
+        <area target="" alt="" title="booked" href="" coords="714,366,714,399,693,398,693,429,715,429,715,442,742,443,744,369"
+            shape="poly">
+        <area target="" alt="" title="booked" href="" coords="852,399,832,400,830,426,853,428,853,444,883,442,882,366,852,366"
+            shape="poly">
+        <area target="" alt="" title="available" href="" coords="901,429,920,430,920,441,952,443,949,369,920,366,921,398,900,396"
+            shape="poly">
+        <area target="" alt="" title="available" href="" coords="522,143,522,171,497,174,498,204,519,204,519,216,548,217,551,142"
+            shape="poly">
+        <area target="" alt="" title="available" href="" coords="581,143,582,174,555,175,557,199,579,203,581,218,609,215,608,144"
+            shape="poly">
+        <area target="" alt="" title="available" href="" coords="647,140,647,175,625,173,625,205,647,203,647,217,678,219,674,143"
+            shape="poly">
+        <area target="" alt="" title="available" href="" coords="710,137,709,174,690,174,690,201,710,204,711,219,740,219,738,141"
+            shape="poly">
+        <area target="" alt="" title="available" href="" coords="790,139,790,171,764,174,766,203,787,205,790,219,817,218,819,143"
+            shape="poly">
+        <area target="" alt="" title="available" href="" coords="861,141,860,175,836,175,836,201,858,205,860,221,889,219,890,141"
+            shape="poly">
+        <area target="" alt="" title="available" href="" coords="930,141,930,171,909,173,908,204,928,204,928,217,961,218,961,140"
+            shape="poly">
+        <area target="" alt="" title="available" href=""
+            coords="1002,644,1010,668,1021,669,1029,687,1059,681,1056,657,1086,648,1078,618" shape="poly">
+    </map>
+
+
+
+    <!-- ===== Modal Structure ===== -->
+    <div class="modal" id="errorModal">
+        <div class="modal-content">
+            <h2>❌ Already Booked</h2>
+            <p>Sorry, this area is not available for booking.</p>
+            <button class="close-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const svgOverlay = document.getElementById('overlay-svg');
+        const areas = document.querySelectorAll('area');
+        const modal = document.getElementById('errorModal');
+
+        areas.forEach(area => {
+            const coords = area.coords.split(',').map(Number);
+            const status = area.title.toLowerCase();
+            const href = area.href;
+
+            if (area.shape === 'poly') {
+                const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+                polygon.setAttribute("points", coords.join(','));
+                polygon.setAttribute("fill", status === 'booked' ? '#FF7F7F' : '#7FFF7F');
+                polygon.setAttribute("opacity", "0.5");
+
+                // Handle clicks
+                polygon.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (status === 'booked') {
+                        openModal();
+                    } else if (status === 'available') {
+                        window.location.href = href;
+                    }
+                });
+
+                svgOverlay.appendChild(polygon);
+            }
+        });
+
+        function openModal() {
+            modal.style.display = "flex";
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        // Close modal when clicking outside content
+        window.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+
+is this code oj?
+ChatGPT said:
+I went through your code carefully 👍
+Overall, it’s valid and will work fine for your purpose (overlaying polygons on an image, dynamically coloring them booked/available, and showing a modal when clicked).
+
+Here are a few observations & small improvements you might want to make:
+
+✅ Good parts:
+Using <svg> overlay ensures scalability and click handling (better than just relying on <map>).
+
+You set pointer-events correctly so polygons are clickable.
+
+Modal logic (open/close and outside click) is clean.
+
+Booked → red fill, Available → green fill works fine.
+
+⚠️ Improvements / Fixes:
+Coords formatting in <polygon>
+
+<polygon> expects points like "x1,y1 x2,y2 x3,y3" (with spaces).
+
+You’re using coords.join(',') which gives "x1,y1,x2,y2...".
+
+Fix it like this:
+
+const points = [];
+for (let i = 0; i < coords.length; i += 2) {
+    points.push(`${coords[i]},${coords[i + 1]}`);
+}
+polygon.setAttribute("points", points.join(" "));
+Accessibility / Tooltips
+
+Since you removed the <area> interactivity, your SVG polygons don’t show tooltips.
+
+You can add polygon.setAttribute("title", status); to preserve hover tooltips.
+
+Unnecessary <map>
+
+You don’t actually need <map> anymore (since you’re handling everything via SVG).
+
+You can keep it if you want a fallback, but otherwise it’s safe to remove.
+
+CSS pointer-events
+
+You have svg { pointer-events: none; } but then polygon { pointer-events: all; } – that’s fine, but just be aware it means only polygons will respond.
+
+Empty href cases
+
+Some <area> tags have href="".
+
+If clicked on “available” but href is empty, it’ll reload the page.
+
+Better to check:
+
+if (status === 'available' && href) {
+    window.location.href = href;
+}
+👉 With those tweaks, your code is solid and production-ready.
+
+Do you want me to fix the coords.join(',') issue and send you the corrected full version?
+
+You said:
+ok
+ChatGPT said:
+Great 👍 Here’s your corrected full version with the fixes applied (mainly converting coords properly for <polygon>, handling empty hrefs, and keeping tooltips):
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Map Colors</title>
+  <style>
+    .map-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .map-container img {
+      display: block;
+      max-width: 100%;
+    }
+
+    svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    polygon {
+      cursor: pointer;
+      pointer-events: all;
+      stroke: #000;
+      stroke-width: 1;
+    }
+
+    /* ===== Modal Styles ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content h2 {
+      margin: 0 0 10px;
+      font-size: 1.3rem;
+      color: #b22222;
+    }
+
+    .modal-content p {
+      margin: 0 0 20px;
+      font-size: 1rem;
+    }
+
+    .close-btn {
+      background: #b22222;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    .close-btn:hover {
+      background: #800000;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="map-container">
+    <img src="map_big.png" usemap="#image-map">
+    <!-- Dynamic SVG overlay -->
+    <svg id="overlay-svg"></svg>
+  </div>
+
+  <map name="image-map">
+    <!-- Same areas as before -->
+    <area title="booked" href="https://sapphirervpark.filldesignprojects.website/cabins/" shape="poly"
+      coords="510,782,510,759,426,759,426,782,454,782,454,805,481,805,481,782">
+    <area title="available" href="https://sapphirervpark.filldesignprojects.website/cabins/"
+      coords="481,747,452,746,451,725,428,723,428,701,510,700,511,725,482,725" shape="poly">
+    <area title="booked" href="" coords="511,668,511,641,417,640,421,665,449,665,450,686,481,687,481,666" shape="poly">
+    <area title="booked" href="" coords="367,205,387,204,387,217,416,217,416,145,390,145,390,173,361,174" shape="poly">
+    <area title="booked" href="" coords="437,204,457,203,458,219,491,221,488,141,459,143,459,172,437,174" shape="poly">
+    <area title="booked" href="" coords="555,368,525,369,525,398,505,400,505,429,527,429,527,443,555,444" shape="poly">
+    <area title="booked" href="" coords="618,368,591,366,588,400,567,398,567,428,587,430,589,442,618,444" shape="poly">
+    <area title="booked" href="" coords="679,369,653,368,649,396,627,400,629,430,648,429,651,443,680,443" shape="poly">
+    <area title="booked" href="" coords="714,366,714,399,693,398,693,429,715,429,715,442,742,443,744,369" shape="poly">
+    <area title="booked" href="" coords="852,399,832,400,830,426,853,428,853,444,883,442,882,366,852,366" shape="poly">
+    <area title="available" href="" coords="901,429,920,430,920,441,952,443,949,369,920,366,921,398,900,396" shape="poly">
+    <area title="available" href="" coords="522,143,522,171,497,174,498,204,519,204,519,216,548,217,551,142" shape="poly">
+    <area title="available" href="" coords="581,143,582,174,555,175,557,199,579,203,581,218,609,215,608,144" shape="poly">
+    <area title="available" href="" coords="647,140,647,175,625,173,625,205,647,203,647,217,678,219,674,143" shape="poly">
+    <area title="available" href="" coords="710,137,709,174,690,174,690,201,710,204,711,219,740,219,738,141" shape="poly">
+    <area title="available" href="" coords="790,139,790,171,764,174,766,203,787,205,790,219,817,218,819,143" shape="poly">
+    <area title="available" href="" coords="861,141,860,175,836,175,836,201,858,205,860,221,889,219,890,141" shape="poly">
+    <area title="available" href="" coords="930,141,930,171,909,173,908,204,928,204,928,217,961,218,961,140" shape="poly">
+    <area title="available" href=""
+      coords="1002,644,1010,668,1021,669,1029,687,1059,681,1056,657,1086,648,1078,618" shape="poly">
+  </map>
+
+  <!-- ===== Modal Structure ===== -->
+  <div class="modal" id="errorModal">
+    <div class="modal-content">
+      <h2>❌ Already Booked</h2>
+      <p>Sorry, this area is not available for booking.</p>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const svgOverlay = document.getElementById('overlay-svg');
+    const areas = document.querySelectorAll('area');
+    const modal = document.getElementById('errorModal');
+
+    areas.forEach(area => {
+      const coords = area.coords.split(',').map(Number);
+      const status = area.title.toLowerCase();
+      const href = area.href;
+
+      if (area.shape === 'poly') {
+        const points = [];
+        for (let i = 0; i < coords.length; i += 2) {
+          points.push(`${coords[i]},${coords[i + 1]}`);
+        }
+
+        const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        polygon.setAttribute("points", points.join(" "));
+        polygon.setAttribute("fill", status === 'booked' ? '#FF7F7F' : '#7FFF7F');
+        polygon.setAttribute("opacity", "0.5");
+        polygon.setAttribute("title", status); // keep tooltip
+
+        // Handle clicks
+        polygon.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (status === 'booked') {
+            openModal();
+          } else if (status === 'available' && href) {
+            window.location.href = href;
+          }
+        });
+
+        svgOverlay.appendChild(polygon);
+      }
+    });
+
+    function openModal() {
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+    // Close modal when clicking outside content
+    window.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+
+</html>
+This version fixes the coords → points conversion issue ✅, ensures no empty href redirects ✅, and keeps tooltips working ✅.
+
+Do you want me to also remove the <map> block completely (since polygons now fully handle interaction), or keep it as a fallback?
+
+You said:
+tell me what are the list of further development of this
+ChatGPT said:
+Perfect — now that you’ve got a working dynamic map with booked/available highlighting + modal, here’s a roadmap of further development ideas you can build on top of this:
+
+🔹 UI / UX Improvements
+Hover tooltips / labels
+
+Show cabin/area number or status (Booked / Available) on hover.
+
+Use a custom styled tooltip instead of browser default.
+
+Legend / Key
+
+Add a small legend explaining color codes:
+
+🟥 Red → Booked
+
+🟩 Green → Available
+
+Interactive Animations
+
+Slight highlight or glow on hover.
+
+Smooth color transition when a booking status changes.
+
+Mobile Responsiveness
+
+Make sure polygons still align properly on small screens (you may need viewBox scaling in SVG).
+
+🔹 Booking System Integration
+Dynamic Data from Backend
+
+Instead of hardcoding booked/available, fetch cabin status from your booking system or database (AJAX / API).
+
+Live Updates
+
+Use WebSockets or periodic AJAX calls to auto-update availability without reloading.
+
+Direct Booking Flow
+
+Clicking an “available” cabin opens a booking form inside a modal instead of redirecting to another page.
+
+Form Integration
+
+Connect with WordPress booking plugins (like MotoPress Hotel Booking which you already have traces of) or custom backend.
+
+🔹 Advanced Features
+Cabin Info Popups
+
+Show a popup with details (photos, amenities, price) before booking.
+
+Search / Filter
+
+Dropdown to filter only “Available” or highlight by cabin type (deluxe, standard, etc.).
+
+Calendar Integration
+
+Show availability per date range (like clicking a cabin shows a mini calendar).
+
+User Login / My Bookings
+
+Logged-in users can see what they booked, modify/cancel reservations.
+
+🔹 Admin Side Enhancements
+Admin Dashboard
+
+Admin panel where you can upload new maps, set coordinates, and update status.
+
+Analytics
+
+Track which cabins are clicked most, heatmap of user interactions.
+
+Export / Import
+
+Ability to export current availability as CSV or sync with external booking system (e.g., Airbnb, Booking.com).
+
+👉 In short:
+
+Frontend polish: tooltips, legend, responsiveness.
+
+Backend integration: live data, booking form, payment gateway.
+
+Advanced UX: cabin info, calendar, search/filter.
+
+Admin tools: dashboard, analytics, external sync.
+
+Do you want me to prioritize these features into a phased development plan (like Phase 1 = UX polish, Phase 2 = live booking integration, etc.) so you can implement step by step?
+
+You said:
+first Implement Show cabin/area number or status (Booked / Available) on hover.  
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Map Colors</title>
+  <style>
+    .map-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .map-container img {
+      display: block;
+      max-width: 100%;
+    }
+
+    svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    polygon {
+      cursor: pointer;
+      pointer-events: all;
+      stroke: #000;
+      stroke-width: 1;
+    }
+
+    /* ===== Modal Styles ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content h2 {
+      margin: 0 0 10px;
+      font-size: 1.3rem;
+      color: #b22222;
+    }
+
+    .modal-content p {
+      margin: 0 0 20px;
+      font-size: 1rem;
+    }
+
+    .close-btn {
+      background: #b22222;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    .close-btn:hover {
+      background: #800000;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="map-container">
+    <img src="map_big.png" usemap="#image-map">
+    <!-- Dynamic SVG overlay -->
+    <svg id="overlay-svg"></svg>
+  </div>
+
+  <map name="image-map">
+    <!-- Same areas as before -->
+    <area title="booked" href="https://sapphirervpark.filldesignprojects.website/cabins/" shape="poly"
+      coords="510,782,510,759,426,759,426,782,454,782,454,805,481,805,481,782">
+    <area title="available" href="https://sapphirervpark.filldesignprojects.website/cabins/"
+      coords="481,747,452,746,451,725,428,723,428,701,510,700,511,725,482,725" shape="poly">
+    <area title="booked" href="" coords="511,668,511,641,417,640,421,665,449,665,450,686,481,687,481,666" shape="poly">
+    <area title="booked" href="" coords="367,205,387,204,387,217,416,217,416,145,390,145,390,173,361,174" shape="poly">
+    <area title="booked" href="" coords="437,204,457,203,458,219,491,221,488,141,459,143,459,172,437,174" shape="poly">
+    <area title="booked" href="" coords="555,368,525,369,525,398,505,400,505,429,527,429,527,443,555,444" shape="poly">
+    <area title="booked" href="" coords="618,368,591,366,588,400,567,398,567,428,587,430,589,442,618,444" shape="poly">
+    <area title="booked" href="" coords="679,369,653,368,649,396,627,400,629,430,648,429,651,443,680,443" shape="poly">
+    <area title="booked" href="" coords="714,366,714,399,693,398,693,429,715,429,715,442,742,443,744,369" shape="poly">
+    <area title="booked" href="" coords="852,399,832,400,830,426,853,428,853,444,883,442,882,366,852,366" shape="poly">
+    <area title="available" href="" coords="901,429,920,430,920,441,952,443,949,369,920,366,921,398,900,396" shape="poly">
+    <area title="available" href="" coords="522,143,522,171,497,174,498,204,519,204,519,216,548,217,551,142" shape="poly">
+    <area title="available" href="" coords="581,143,582,174,555,175,557,199,579,203,581,218,609,215,608,144" shape="poly">
+    <area title="available" href="" coords="647,140,647,175,625,173,625,205,647,203,647,217,678,219,674,143" shape="poly">
+    <area title="available" href="" coords="710,137,709,174,690,174,690,201,710,204,711,219,740,219,738,141" shape="poly">
+    <area title="available" href="" coords="790,139,790,171,764,174,766,203,787,205,790,219,817,218,819,143" shape="poly">
+    <area title="available" href="" coords="861,141,860,175,836,175,836,201,858,205,860,221,889,219,890,141" shape="poly">
+    <area title="available" href="" coords="930,141,930,171,909,173,908,204,928,204,928,217,961,218,961,140" shape="poly">
+    <area title="available" href=""
+      coords="1002,644,1010,668,1021,669,1029,687,1059,681,1056,657,1086,648,1078,618" shape="poly">
+  </map>
+
+  <!-- ===== Modal Structure ===== -->
+  <div class="modal" id="errorModal">
+    <div class="modal-content">
+      <h2>❌ Already Booked</h2>
+      <p>Sorry, this area is not available for booking.</p>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const svgOverlay = document.getElementById('overlay-svg');
+    const areas = document.querySelectorAll('area');
+    const modal = document.getElementById('errorModal');
+
+    areas.forEach(area => {
+      const coords = area.coords.split(',').map(Number);
+      const status = area.title.toLowerCase();
+      const href = area.href;
+
+      if (area.shape === 'poly') {
+        const points = [];
+        for (let i = 0; i < coords.length; i += 2) {
+          points.push(${coords[i]},${coords[i + 1]});
+        }
+
+        const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        polygon.setAttribute("points", points.join(" "));
+        polygon.setAttribute("fill", status === 'booked' ? '#FF7F7F' : '#7FFF7F');
+        polygon.setAttribute("opacity", "0.5");
+        polygon.setAttribute("title", status); // keep tooltip
+
+        // Handle clicks
+        polygon.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (status === 'booked') {
+            openModal();
+          } else if (status === 'available' && href) {
+            window.location.href = href;
+          }
+        });
+
+        svgOverlay.appendChild(polygon);
+      }
+    });
+
+    function openModal() {
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+    // Close modal when clicking outside content
+    window.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+
+</html>
+ChatGPT said:
+Got it 👍 — let’s add custom tooltips so when the user hovers over any cabin/area polygon, it shows cabin number + status (Booked / Available) in a styled floating box.
+
+Here’s the updated code with hover tooltip support:
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Map Colors</title>
+  <style>
+    .map-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .map-container img {
+      display: block;
+      max-width: 100%;
+    }
+
+    svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    polygon {
+      cursor: pointer;
+      pointer-events: all;
+      stroke: #000;
+      stroke-width: 1;
+      transition: opacity 0.2s;
+    }
+
+    polygon:hover {
+      opacity: 0.7;
+    }
+
+    /* ===== Tooltip Styles ===== */
+    .tooltip {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-size: 0.85rem;
+      pointer-events: none;
+      white-space: nowrap;
+      display: none;
+      z-index: 2000;
+    }
+
+    /* ===== Modal Styles ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content h2 {
+      margin: 0 0 10px;
+      font-size: 1.3rem;
+      color: #b22222;
+    }
+
+    .modal-content p {
+      margin: 0 0 20px;
+      font-size: 1rem;
+    }
+
+    .close-btn {
+      background: #b22222;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    .close-btn:hover {
+      background: #800000;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="map-container">
+    <img src="map_big.png" usemap="#image-map">
+    <!-- Dynamic SVG overlay -->
+    <svg id="overlay-svg"></svg>
+    <!-- Tooltip -->
+    <div class="tooltip" id="tooltip"></div>
+  </div>
+
+  <map name="image-map">
+    <area title="Cabin 1 - booked" href="https://sapphirervpark.filldesignprojects.website/cabins/" shape="poly"
+      coords="510,782,510,759,426,759,426,782,454,782,454,805,481,805,481,782">
+    <area title="Cabin 2 - available" href="https://sapphirervpark.filldesignprojects.website/cabins/"
+      coords="481,747,452,746,451,725,428,723,428,701,510,700,511,725,482,725" shape="poly">
+    <!-- ... other areas ... -->
+  </map>
+
+  <!-- ===== Modal Structure ===== -->
+  <div class="modal" id="errorModal">
+    <div class="modal-content">
+      <h2>❌ Already Booked</h2>
+      <p>Sorry, this area is not available for booking.</p>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const svgOverlay = document.getElementById('overlay-svg');
+    const areas = document.querySelectorAll('area');
+    const modal = document.getElementById('errorModal');
+    const tooltip = document.getElementById('tooltip');
+
+    areas.forEach(area => {
+      const coords = area.coords.split(',').map(Number);
+      const statusText = area.title; // e.g. "Cabin 1 - booked"
+      const status = statusText.toLowerCase().includes('booked') ? 'booked' : 'available';
+      const href = area.href;
+
+      if (area.shape === 'poly') {
+        const points = [];
+        for (let i = 0; i < coords.length; i += 2) {
+          points.push(`${coords[i]},${coords[i + 1]}`);
+        }
+
+        const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        polygon.setAttribute("points", points.join(" "));
+        polygon.setAttribute("fill", status === 'booked' ? '#FF7F7F' : '#7FFF7F');
+        polygon.setAttribute("opacity", "0.5");
+
+        // Show tooltip on hover
+        polygon.addEventListener("mousemove", (e) => {
+          tooltip.style.display = "block";
+          tooltip.textContent = statusText;
+          tooltip.style.left = (e.pageX + 10) + "px";
+          tooltip.style.top = (e.pageY + 10) + "px";
+        });
+
+        polygon.addEventListener("mouseleave", () => {
+          tooltip.style.display = "none";
+        });
+
+        // Handle clicks
+        polygon.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (status === 'booked') {
+            openModal();
+          } else if (status === 'available' && href) {
+            window.location.href = href;
+          }
+        });
+
+        svgOverlay.appendChild(polygon);
+      }
+    });
+
+    function openModal() {
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+    // Close modal when clicking outside content
+    window.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+
+</html>
+🔑 How this works:
+Each <area>’s title is used (e.g., "Cabin 1 - booked").
+
+When you hover over a polygon, a custom tooltip follows the cursor with that text.
+
+When you leave the polygon, the tooltip disappears.
+
+👉 Do you want me to also auto-generate cabin numbers (like “Cabin 1, 2, 3” based on loop index) instead of manually writing them in <area title>?
+
+
+
+No file chosenNo file chosen
+ChatGPT can make mistakes. Check important info. See Cookie Preferences.
+ChatGPT says: Got it 👍 — let’s add **custom tooltips** so when the user hovers over any cabin/area polygon, it shows **cabin number + status (Booked / Available)** in a styled floating box. Here’s the updated code with hover tooltip support: ```html <!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Dynamic Map Colors</title> <style> .map-container { position: relative; display: inline-block; } .map-container img { display: block; max-width: 100%; } svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; } polygon { cursor: pointer; pointer-events: all; stroke: #000; stroke-width: 1; transition: opacity 0.2s; } polygon:hover { opacity: 0.7; } /* ===== Tooltip Styles ===== */ .tooltip { position: absolute; background: rgba(0, 0, 0, 0.8); color: #fff; padding: 6px 10px; border-radius: 5px; font-size: 0.85rem; pointer-events: none; white-space: nowrap; display: none; z-index: 2000; } /* ===== Modal Styles ===== */ .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; } .modal-content { background: #fff; padding: 20px 30px; border-radius: 10px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3); animation: fadeIn 0.3s ease; } .modal-content h2 { margin: 0 0 10px; font-size: 1.3rem; color: #b22222; } .modal-content p { margin: 0 0 20px; font-size: 1rem; } .close-btn { background: #b22222; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.3s; } .close-btn:hover { background: #800000; } @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } } </style> </head> <body> <div class="map-container"> <img src="map_big.png" usemap="#image-map"> <!-- Dynamic SVG overlay --> <svg id="overlay-svg"></svg> <!-- Tooltip --> <div class="tooltip" id="tooltip"></div> </div> <map name="image-map"> <area title="Cabin 1 - booked" href="https://sapphirervpark.filldesignprojects.website/cabins/" shape="poly" coords="510,782,510,759,426,759,426,782,454,782,454,805,481,805,481,782"> <area title="Cabin 2 - available" href="https://sapphirervpark.filldesignprojects.website/cabins/" coords="481,747,452,746,451,725,428,723,428,701,510,700,511,725,482,725" shape="poly"> <!-- ... other areas ... --> </map> <!-- ===== Modal Structure ===== --> <div class="modal" id="errorModal"> <div class="modal-content"> <h2>❌ Already Booked</h2> <p>Sorry, this area is not available for booking.</p> <button class="close-btn" onclick="closeModal()">Close</button> </div> </div> <script> const svgOverlay = document.getElementById('overlay-svg'); const areas = document.querySelectorAll('area'); const modal = document.getElementById('errorModal'); const tooltip = document.getElementById('tooltip'); areas.forEach(area => { const coords = area.coords.split(',').map(Number); const statusText = area.title; // e.g. "Cabin 1 - booked" const status = statusText.toLowerCase().includes('booked') ? 'booked' : 'available'; const href = area.href; if (area.shape === 'poly') { const points = []; for (let i = 0; i < coords.length; i += 2) { points.push(`${coords[i]},${coords[i + 1]}`); } const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon"); polygon.setAttribute("points", points.join(" ")); polygon.setAttribute("fill", status === 'booked' ? '#FF7F7F' : '#7FFF7F'); polygon.setAttribute("opacity", "0.5"); // Show tooltip on hover polygon.addEventListener("mousemove", (e) => { tooltip.style.display = "block"; tooltip.textContent = statusText; tooltip.style.left = (e.pageX + 10) + "px"; tooltip.style.top = (e.pageY + 10) + "px"; }); polygon.addEventListener("mouseleave", () => { tooltip.style.display = "none"; }); // Handle clicks polygon.addEventListener('click', (e) => { e.preventDefault(); if (status === 'booked') { openModal(); } else if (status === 'available' && href) { window.location.href = href; } }); svgOverlay.appendChild(polygon); } }); function openModal() { modal.style.display = "flex"; } function closeModal() { modal.style.display = "none"; } // Close modal when clicking outside content window.addEventListener("click", (e) => { if (e.target === modal) { closeModal(); } }); </script> </body> </html> ``` --- ### 🔑 How this works: - Each `<area>`’s `title` is used (e.g., `"Cabin 1 - booked"`). - When you hover over a polygon, a **custom tooltip** follows the cursor with that text. - When you leave the polygon, the tooltip disappears. --- 👉 Do you want me to also **auto-generate cabin numbers** (like “Cabin 1, 2, 3” based on loop index) instead of manually writing them in `<area title>`?
