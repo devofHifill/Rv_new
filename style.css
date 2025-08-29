@@ -13,9 +13,11 @@ svg {
   left: 0;
   top: 0;
   width: 100%;
-  height: 100%;
+  height: auto;   /* was 100% — makes it distort */
+  aspect-ratio: attr(width) / attr(height); /* modern fallback */
   pointer-events: none;
 }
+
 
 polygon {
   cursor: pointer;
@@ -59,6 +61,7 @@ polygon:hover {
 .tooltip.available-soon {
   background: #DAA520; /* golden yellow */
 }
+
 
 /* Modal */
 .modal {
@@ -148,13 +151,33 @@ polygon:hover {
 
 /* Legend colors (same as polygons/tooltips) */
 .legend-box.booked {
-  background: #b22222; /* red */
+  background: #FF7F7F; /* red */
 }
 
 .legend-box.available {
-  background: #228B22; /* green */
+  background: #7FFF7F; /* green */
 }
 
 .legend-box.available-soon {
-  background: #DAA520; /* yellow */
+  background: #FFD966; /* yellow */
+}
+
+
+
+/* Resposivness */
+
+@media (max-width: 600px) {
+  .tooltip {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+  .modal-content {
+    width: 95%;
+    font-size: 0.9rem;
+  }
+}
+
+.modal-content {
+  max-width: 90vw;
+  width: auto;
 }
