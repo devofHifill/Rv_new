@@ -32,15 +32,32 @@ polygon:hover {
 /* Tooltip */
 .tooltip {
   position: absolute;
-  background: rgba(0, 0, 0, 0.8);
   color: #fff;
-  padding: 6px 10px;
-  border-radius: 5px;
-  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
   pointer-events: none;
   white-space: nowrap;
   display: none;
   z-index: 2000;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-5px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  opacity: 0.95;
+}
+
+/* Tooltip colors by status */
+.tooltip.booked {
+  background: #b22222; /* dark red */
+}
+
+.tooltip.available {
+  background: #228B22; /* forest green */
+}
+
+.tooltip.available-soon {
+  background: #DAA520; /* golden yellow */
 }
 
 /* Modal */

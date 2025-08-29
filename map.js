@@ -2,6 +2,12 @@ const svgOverlay = document.getElementById("overlay-svg");
 const modal = document.getElementById("errorModal");
 const tooltip = document.getElementById("tooltip");
 
+const fillColors = {
+  booked: "#FF7F7F",          // red
+  available: "#7FFF7F",       // green
+  "available-soon": "#FFD966" // yellow
+};
+
 // Load cabins from JSON
 fetch("cabins.json")
   .then(res => res.json())
@@ -15,15 +21,25 @@ fetch("cabins.json")
 
       const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
       polygon.setAttribute("points", points.join(" "));
-      polygon.setAttribute("fill", cabin.status === "booked" ? "#FF7F7F" : "#7FFF7F");
+      polygon.setAttribute("fill", fillColors[cabin.status] || "#ccc");
       polygon.setAttribute("opacity", "0.5");
 
-      // Tooltip
+      // Remove browser default tooltip
+      polygon.removeAttribute("title");
+
+      // Custom tooltip
       polygon.addEventListener("mousemove", (e) => {
         tooltip.style.display = "block";
-        tooltip.textContent = `${cabin.name} - ${cabin.status}`;
-        tooltip.style.left = (e.pageX + 10) + "px";
-        tooltip.style.top = (e.pageY + 10) + "px";
+        tooltip.textContent = `${cabin.name} - ${cabin.status.replace("-", " ")}`;
+
+        // Reset classes
+        tooltip.classList.remove("booked", "available", "available-soon");
+
+        // Add class based on status
+        tooltip.classList.add(cabin.status);
+
+        tooltip.style.left = (e.pageX + 15) + "px";
+        tooltip.style.top = (e.pageY + 15) + "px";
       });
 
       polygon.addEventListener("mouseleave", () => {
@@ -38,11 +54,13 @@ fetch("cabins.json")
         } else if (cabin.status === "available" && cabin.href) {
           window.location.href = cabin.href;
         }
+        // available-soon = no redirect, just tooltip
       });
 
       svgOverlay.appendChild(polygon);
     });
-  });
+  })
+  .catch(err => console.error("Error loading cabins.json:", err));
 
 // Modal controls
 function openModal() {
