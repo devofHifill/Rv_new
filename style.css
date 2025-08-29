@@ -121,3 +121,40 @@ polygon:hover {
     transform: translateY(0);
   }
 }
+
+
+/* colors for ledgend
+/* Legend */
+.legend {
+  margin-top: 15px;
+  display: flex;
+  gap: 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.legend div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Legend colors (same as polygons/tooltips) */
+.legend-box.booked {
+  background: #b22222; /* red */
+}
+
+.legend-box.available {
+  background: #228B22; /* green */
+}
+
+.legend-box.available-soon {
+  background: #DAA520; /* yellow */
+}
